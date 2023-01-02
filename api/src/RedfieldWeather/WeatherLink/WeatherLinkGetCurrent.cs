@@ -28,10 +28,9 @@ namespace RedfieldWeather.WeatherLink
 		}
 
 		[Function("WeatherLinkGetCurrent")]
-		[TableOutput("historical", Connection = "RedfieldWeatherStorage")]
-		public async Task<HistoricalWeather> Run([TimerTrigger("*/5 * * * * *")] TimerInfo timerInfo)
+		public async Task<HistoricalWeather> Run([TimerTrigger("0 */5 * * * *", RunOnStartup = true)] TimerInfo timerInfo)
 		{
-			var stationId = _configuration.GetValue<int>("Values:WeatherLinkAPI:StationId");
+			var stationId = _configuration.GetValue<int>("WeatherLinkAPI:StationId");
 			var current = await _client.GetCurrent(stationId);
 
 			JsonSerializerOptions options = new JsonSerializerOptions();
@@ -46,7 +45,7 @@ namespace RedfieldWeather.WeatherLink
 				Weather = weather
 			};
 
-			var currentWeather = new CurrentWeather { Weather = weather };
+			//var currentWeather = new CurrentWeather { Weather = weather };
 
 			return historicalWeather;
 		}
