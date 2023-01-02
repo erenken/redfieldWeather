@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "RedfieldWeather": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7116",
-      "launchBrowser": false
-    }
-  }
-}
