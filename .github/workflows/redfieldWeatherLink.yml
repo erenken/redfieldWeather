@@ -10,10 +10,10 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_NAME: redfieldWeatherLink
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: src\RedfieldWeather\api\published
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: api\src\RedfieldWeather\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 7.0.x
-  WORKING_DIRECTORY: src\RedfieldWeather\api
+  WORKING_DIRECTORY: api\src\RedfieldWeather
   DOTNET_CORE_VERSION_INPROC: 6.0.x
 jobs:
   build:
