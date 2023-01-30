@@ -1,7 +1,7 @@
 using Azure;
 using Azure.Data.Tables;
 
-namespace RedfieldWeather.Models
+namespace RedfieldWeather.Entities
 {
 	public class HistoricalWeather : ITableEntity
 	{

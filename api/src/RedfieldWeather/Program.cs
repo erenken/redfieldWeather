@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using myNOC.WeatherLink;
 using myNOC.WeatherLink.API;
-using RedfieldWeather.Models;
+using RedfieldWeather.Repositories;
 
 var host = new HostBuilder()
 	.ConfigureFunctionsWorkerDefaults()
@@ -13,8 +13,8 @@ var host = new HostBuilder()
 			services
 				.AddWeatherLink()
 				.AddLogging(config => config.AddConsole())
-				.AddScoped<HistoricalWeather>()
-				.AddScoped<CurrentWeather>();
+				.AddSingleton<IHistoricalWeatherRepository, HistoricalWeatherRepository>()
+				.AddSingleton<ICurrentWeatherRepository, CurrentWeatherRepository>();
 		})
 	.ConfigureAppConfiguration(config =>
 	{

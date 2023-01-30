@@ -1,9 +1,11 @@
+using Azure.Data.Tables;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using myNOC.WeatherLink;
 using myNOC.WeatherLink.JsonConverters;
-using RedfieldWeather.Models;
+using RedfieldWeather.Entities;
+using RedfieldWeather.Repositories;
 using System.Text.Json;
 
 namespace RedfieldWeather.WeatherLink
@@ -13,22 +15,26 @@ namespace RedfieldWeather.WeatherLink
 		private readonly IClient _client;
 		private readonly SensorJsonConverterFactory _sensorJsonConverterFactory;
 		private readonly IConfiguration _configuration;
-		private readonly ILogger<WeatherLinkGetCurrent> _logger;
+		private readonly IHistoricalWeatherRepository _historicalWeatherRepository;
+		private readonly ICurrentWeatherRepository _currentWeatherRepository;
 
 		public WeatherLinkGetCurrent(
 			IClient client,
 			SensorJsonConverterFactory sensorJsonConverterFactory,
 			IConfiguration configuration,
-			ILogger<WeatherLinkGetCurrent> logger)
+			IHistoricalWeatherRepository historicalWeatherRepository,
+			ICurrentWeatherRepository currentWeatherRepository
+			)
 		{
 			_client = client;
 			_sensorJsonConverterFactory = sensorJsonConverterFactory;
 			_configuration = configuration;
-			_logger = logger;
+			_historicalWeatherRepository = historicalWeatherRepository;
+			_currentWeatherRepository = currentWeatherRepository;
 		}
 
 		[Function("WeatherLinkGetCurrent")]
-		public async Task<HistoricalWeather> Run([TimerTrigger("0 */5 * * * *", RunOnStartup = true)] TimerInfo timerInfo)
+		public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo timerInfo)
 		{
 			var stationId = _configuration.GetValue<int>("WeatherLinkAPI:StationId");
 			var current = await _client.GetCurrent(stationId);
@@ -45,9 +51,15 @@ namespace RedfieldWeather.WeatherLink
 				Weather = weather
 			};
 
-			//var currentWeather = new CurrentWeather { Weather = weather };
+			var currentWeather = new CurrentWeather { Weather = weather };
 
-			return historicalWeather;
+			var tasks = new Task[]
+				{
+					_historicalWeatherRepository.Upsert(historicalWeather),
+					_currentWeatherRepository.Upsert(currentWeather)
+				};
+
+			await Task.WhenAll(tasks);
 		}
 	}
 }
