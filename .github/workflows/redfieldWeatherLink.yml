@@ -14,7 +14,7 @@ env:
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 7.0.x
   WORKING_DIRECTORY: api\src\RedfieldWeather
-  DOTNET_CORE_VERSION_INPROC: 6.0.x
+  DOTNET_CORE_VERSION_INPROC: 7.0.x
 jobs:
   build:
     runs-on: windows-latest
