@@ -15,6 +15,9 @@
 		<PackageReference Include="myNOC.WeatherLink" Version="0.1.6" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Update="app.settings.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="host.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

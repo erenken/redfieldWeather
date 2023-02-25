@@ -1,0 +1,20 @@
+{
+	"IsEncrypted": false,
+	"Values": {
+		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
+		"FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+	},
+	"WeatherLinkAPI": {
+		"HttpClient": {
+			"BaseUri": "https://api.weatherlink.com/v2"
+		},
+		"APIContext": {
+			"APIKey": "{apiKey}",
+			"APISecret": "{apiSecret}"
+		},
+		"StationId": 152788
+	},
+	"ConnectionStrings": {
+		"weatherStorage": "{storage}"
+	}
+}
