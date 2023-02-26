@@ -1,4 +1,6 @@
 import React from 'react';
+import { withAITracking } from '@microsoft/applicationinsights-react-js';
+import { reactPlugin } from '../AppInsights';
 
 class HomePage extends React.Component {
     render(): React.ReactNode {
@@ -10,4 +12,4 @@ class HomePage extends React.Component {
     }
 }
 
-export default HomePage;
+export default withAITracking(reactPlugin, HomePage);
