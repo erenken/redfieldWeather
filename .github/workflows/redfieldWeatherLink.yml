@@ -3,10 +3,14 @@ on:
   push:
     branches:
     - work/angular
+    paths:
+      - api/**
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+    paths:
+      - api/**
 
 env:
   AZURE_FUNCTIONAPP_NAME: redfieldWeatherLink
