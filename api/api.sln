@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{72329FBB-97B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F2F8F3DF-6265-41B4-8F20-C8279929CC43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedfieldWeather", "src\RedfieldWeather\RedfieldWeather.csproj", "{63845A4C-5AD7-4210-AADC-2D6AE4266C78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedfieldWeather", "src\RedfieldWeather\RedfieldWeather.csproj", "{63845A4C-5AD7-4210-AADC-2D6AE4266C78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

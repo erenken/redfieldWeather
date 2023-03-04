@@ -1,9 +1,10 @@
 using Azure.Data.Tables;
 using Microsoft.Extensions.Configuration;
+using System.Linq.Expressions;
 
 namespace RedfieldWeather.Repositories
 {
-	public abstract class WeatherRepository<TEntity> : IWeatherRepository<TEntity> where TEntity : ITableEntity
+	public abstract class WeatherRepository<TEntity> : IWeatherRepository<TEntity> where TEntity : class, ITableEntity
 	{
 		private TableClient? _tableClient;
 		private readonly string _connectionString = default!;
@@ -28,6 +29,13 @@ namespace RedfieldWeather.Repositories
 			GetTableClient();
 
 			await _tableClient!.UpsertEntityAsync(entity);
+		}
+
+		public IAsyncEnumerable<TEntity> Get(Expression<Func<TEntity, bool>>? filter = null, int? maxPerPage = null)
+		{
+			GetTableClient();
+	
+			return _tableClient!.QueryAsync(filter, maxPerPage);
 		}
 	}
 }

@@ -1,15 +1,12 @@
-using Azure.Data.Tables;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using myNOC.WeatherLink;
 using myNOC.WeatherLink.JsonConverters;
 using RedfieldWeather.Entities;
 using RedfieldWeather.Repositories;
 using System.Text.Json;
 
-namespace RedfieldWeather.WeatherLink
-{
+namespace RedfieldWeather.WeatherLink {
 	public class WeatherLinkGetCurrent
 	{
 		private readonly IClient _client;

@@ -10,5 +10,17 @@ namespace RedfieldWeather.Repositories
 		}
 
 		public override string TableName => "current";
+
+		public async Task<CurrentWeather> Get()
+		{
+			CurrentWeather currentWeather = new();
+
+			var pagedWeather = base.Get(x => x.PartitionKey == currentWeather.PartitionKey && x.RowKey == currentWeather.RowKey);
+
+			await foreach(var weather in pagedWeather)
+				currentWeather = weather;
+
+			return currentWeather;
+		}
 	}
 }
