@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 
 import reportWebVitals from './reportWebVitals';
-import { appInsights } from './AppInsights';
+import { appInsights } from './utilities/AppInsights';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

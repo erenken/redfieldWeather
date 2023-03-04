@@ -4,7 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using myNOC.WeatherLink;
 using myNOC.WeatherLink.API;
+using myNOC.WeatherLink.JsonConverters;
 using RedfieldWeather.Repositories;
+using System.Text.Json;
 
 var host = new HostBuilder()
 	.ConfigureFunctionsWorkerDefaults()
@@ -24,7 +26,7 @@ var host = new HostBuilder()
 	.Build();
 
 var config = host.Services.GetService<IConfiguration>();
-config?.GetSection("WeatherLinkAPI:HttpClient").Bind(host.Services.GetService<IAPIHttpClient>());
-config?.GetSection("WeatherLinkAPI:APIContext").Bind(host.Services.GetService<IAPIContext>());
+config?.GetSection("WeatherLinkAPI:HttpClient").Bind(host.Services.GetRequiredService<IAPIHttpClient>());
+config?.GetSection("WeatherLinkAPI:APIContext").Bind(host.Services.GetRequiredService<IAPIContext>());
 
 await host.RunAsync();

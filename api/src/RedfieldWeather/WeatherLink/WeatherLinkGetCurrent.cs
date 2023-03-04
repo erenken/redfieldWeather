@@ -30,33 +30,33 @@ namespace RedfieldWeather.WeatherLink {
 			_currentWeatherRepository = currentWeatherRepository;
 		}
 
-		[Function("WeatherLinkGetCurrent")]
-		public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo timerInfo)
-		{
-			var stationId = _configuration.GetValue<int>("WeatherLinkAPI:StationId");
-			var current = await _client.GetCurrent(stationId);
+		//[Function("WeatherLinkGetCurrent")]
+		//public async Task Run([TimerTrigger("*/5 * * * * *")] TimerInfo timerInfo)
+		//{
+		//	var stationId = _configuration.GetValue<int>("WeatherLinkAPI:StationId");
+		//	var current = await _client.GetCurrent(stationId);
 
-			JsonSerializerOptions options = new JsonSerializerOptions();
-			options.Converters.Add(_sensorJsonConverterFactory);
+		//	JsonSerializerOptions options = new JsonSerializerOptions();
+		//	options.Converters.Add(_sensorJsonConverterFactory);
 
-			var weather = JsonSerializer.Serialize(current, options);
+		//	var weather = JsonSerializer.Serialize(current, options);
 
-			var historicalWeather = new HistoricalWeather
-			{
-				PartitionKey = current!.GeneratedAt.ToString("yyyyMMdd"),
-				RowKey = current!.GeneratedAt.ToString("s"),
-				Weather = weather
-			};
+		//	var historicalWeather = new HistoricalWeather
+		//	{
+		//		PartitionKey = current!.GeneratedAt.ToString("yyyyMMdd"),
+		//		RowKey = current!.GeneratedAt.ToString("s"),
+		//		Weather = weather
+		//	};
 
-			var currentWeather = new CurrentWeather { Weather = weather };
+		//	var currentWeather = new CurrentWeather { Weather = weather };
 
-			var tasks = new Task[]
-				{
-					_historicalWeatherRepository.Upsert(historicalWeather),
-					_currentWeatherRepository.Upsert(currentWeather)
-				};
+		//	var tasks = new Task[]
+		//		{
+		//			_historicalWeatherRepository.Upsert(historicalWeather),
+		//			_currentWeatherRepository.Upsert(currentWeather)
+		//		};
 
-			await Task.WhenAll(tasks);
-		}
+		//	await Task.WhenAll(tasks);
+		//}
 	}
 }
