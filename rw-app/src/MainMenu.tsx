@@ -1,14 +1,10 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { currentWeather } from './utilities/WeatherContext';
+import { IDavisVantagePro2Plus } from './utilities/interfaces/IDavisVantagePro2Plus';
 
-class MainMenu extends React.Component {
 
+class MainMenu extends React.Component<{ vantagePro?: IDavisVantagePro2Plus | undefined }> {
     render(): React.ReactNode {
-        const weather = currentWeather;
-        const sensor = weather.sensors.filter((x: { Type: number; }) => x.Type === 46);
-        const vantageSensor = sensor.data[0];
-
         return (
             <Navbar bg='primary' variant='dark' fixed='top' collapseOnSelect expand='lg'>
                 <Navbar.Brand href='#currentConditions' className='px-4 me-auto'>
@@ -22,9 +18,11 @@ class MainMenu extends React.Component {
                         <Nav.Link href='#about'>About</Nav.Link>
                      </Nav>
                     <Nav>
-                        <Nav.Link href='#currentConditions'>
-                           { vantageSensor.temp } ° F
-                        </Nav.Link>
+                        { this.props.vantagePro &&
+                            <Nav.Link href='#currentConditions'>
+                            { this.props.vantagePro.temp }° F
+                            </Nav.Link>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>

@@ -1,4 +1,4 @@
-name: WeatherLink fucntion and API
+name: WeatherLink function and API
 on:
   push:
     branches:
