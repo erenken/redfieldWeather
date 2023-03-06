@@ -1,26 +1,32 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
+import { getVantagePro2PlusSensor } from './utilities/CurrentWeather';
+import { ICurrentWeather } from './utilities/interfaces/ICurrentWeather';
 import { IDavisVantagePro2Plus } from './utilities/interfaces/IDavisVantagePro2Plus';
 
 
-class MainMenu extends React.Component<{ vantagePro?: IDavisVantagePro2Plus | undefined }> {
+class MainMenu extends React.Component<{ weather: ICurrentWeather | undefined }> {
+    vantagePro?: IDavisVantagePro2Plus = undefined;
+
     render(): React.ReactNode {
+        this.vantagePro = getVantagePro2PlusSensor(this.props.weather);
+        
         return (
-            <Navbar bg='primary' variant='dark' fixed='top' collapseOnSelect expand='lg'>
+            <Navbar bg='primary' variant='dark' collapseOnSelect expand='lg'>
                 <Navbar.Brand href='#currentConditions' className='px-4 me-auto'>
                     Redfield Weather
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls='responsive-navbar-nav' />
                 <Navbar.Collapse id='responsive-navbar-nav'>
                     <Nav className='me-auto'>
-                        <Nav.Link href='#currentConditions'>Current Conditions</Nav.Link>
-                        <Nav.Link href='#maps'>Maps</Nav.Link>
-                        <Nav.Link href='#about'>About</Nav.Link>
+                        <Nav.Link href='/current'>Current Conditions</Nav.Link>
+                        <Nav.Link href='/maps'>Maps</Nav.Link>
+                        <Nav.Link href='/about'>About</Nav.Link>
                      </Nav>
                     <Nav>
-                        { this.props.vantagePro &&
+                        { this.vantagePro &&
                             <Nav.Link href='#currentConditions'>
-                            { this.props.vantagePro.temp }° F
+                            { this.vantagePro.temp }° F
                             </Nav.Link>
                         }
                     </Nav>

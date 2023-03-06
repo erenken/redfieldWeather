@@ -1,14 +1,19 @@
 import React from 'react';
 import { withAITracking } from '@microsoft/applicationinsights-react-js';
 import { reactPlugin } from '../utilities/AppInsights';
-import CurrentWeather from '../components/CurrentWeather';
+import CurrentConditions from '../components/CurrentConditions';
+import { Container, Spinner } from 'react-bootstrap';
+import { ICurrentWeather } from '../utilities/interfaces/ICurrentWeather';
 
-class HomePage extends React.Component {
+class HomePage extends React.Component<{ weather: ICurrentWeather | undefined }> {
     render(): React.ReactNode {
         return (
-            <div>
-                <CurrentWeather />
-            </div>
+            <Container>
+                {this.props.weather
+                    ? <CurrentConditions weather={this.props.weather} />
+                    : <div className='d-flex justify-content-center'><Spinner variant='primary'></Spinner></div>
+                }
+            </Container>
         );
     }
 }
