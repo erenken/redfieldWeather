@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33209.295
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{72329FBB-97B7-4D29-8FF2-AA70F14485B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F2F8F3DF-6265-41B4-8F20-C8279929CC43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedfieldWeather", "src\RedfieldWeather\RedfieldWeather.csproj", "{63845A4C-5AD7-4210-AADC-2D6AE4266C78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63845A4C-5AD7-4210-AADC-2D6AE4266C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63845A4C-5AD7-4210-AADC-2D6AE4266C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63845A4C-5AD7-4210-AADC-2D6AE4266C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63845A4C-5AD7-4210-AADC-2D6AE4266C78}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{63845A4C-5AD7-4210-AADC-2D6AE4266C78} = {72329FBB-97B7-4D29-8FF2-AA70F14485B3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A3892E3-46DD-4E81-AA04-D7A67B2629CC}
+	EndGlobalSection
+EndGlobal
