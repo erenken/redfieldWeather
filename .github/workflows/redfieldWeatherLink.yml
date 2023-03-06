@@ -2,13 +2,7 @@ name: WeatherLink function and API
 on:
   push:
     branches:
-    - work/angular
-    paths:
-      - api/**
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
+    - main
     paths:
       - api/**
 

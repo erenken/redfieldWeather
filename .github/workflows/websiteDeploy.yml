@@ -3,10 +3,6 @@ name: Website Deploy
 on:
   push:
     branches:
-      - work/angular
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
       - main
 
 jobs:
