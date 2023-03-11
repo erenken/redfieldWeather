@@ -13,7 +13,7 @@
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.1.0" />
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-		<PackageReference Include="myNOC.WeatherLink" Version="0.1.12" />
+		<PackageReference Include="myNOC.WeatherLink" Version="0.1.13" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="app.settings.json">

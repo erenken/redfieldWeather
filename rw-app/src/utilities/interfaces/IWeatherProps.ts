@@ -1,5 +1,5 @@
-import { ICurrentWeather } from "./ICurrentWeather";
+import { CurrentWeather } from "../CurrentWeather";
 
 export interface IWeatherProps {
-    currentWeather: ICurrentWeather;
+    currentWeather: CurrentWeather;
 }
