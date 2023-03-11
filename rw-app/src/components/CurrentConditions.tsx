@@ -1,17 +1,17 @@
 import React from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
-import { getVantagePro2PlusSensor } from '../utilities/CurrentWeather';
-import { ICurrentWeather } from '../utilities/interfaces/ICurrentWeather';
-import { IDavisVantagePro2Plus } from '../utilities/interfaces/IDavisVantagePro2Plus';
+import { CurrentWeather } from '../utilities/CurrentWeather';
+import { IVantagePro2Plus } from '../utilities/interfaces/IVantagePro2Plus';
 
-class CurrentConditions extends React.Component<{ weather: ICurrentWeather | undefined }> {
-    vantagePro?: IDavisVantagePro2Plus = undefined;
+class CurrentConditions extends React.Component<{ weather: CurrentWeather | undefined }> {
+    vantagePro?: IVantagePro2Plus = undefined;
 
     render(): React.ReactNode {
-        this.vantagePro = getVantagePro2PlusSensor(this.props.weather);
+        this.vantagePro = this.props.weather?.vantagePro2Plus;
 
         return (
             <>
+                <br />
                 <Card>
                     <Card.Header>Current Conditions</Card.Header>
                     <Card.Body>
@@ -64,6 +64,10 @@ class CurrentConditions extends React.Component<{ weather: ICurrentWeather | und
                         <Row>
                             <Col>Daily Rain</Col>
                             <Col align='end'>{this.vantagePro?.rainfall_daily_in} in</Col>
+                        </Row>
+                        <Row>
+                            <Col>Rain Last 24 Hours</Col>
+                            <Col align='end'>{this.vantagePro?.rainfall_last_24_hr_in} in</Col>
                         </Row>
                     </Card.Body>
                     {this.vantagePro &&

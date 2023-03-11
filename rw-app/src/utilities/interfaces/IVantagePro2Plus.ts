@@ -1,6 +1,6 @@
 import { ISensorData } from "./ISensorData";
 
-export interface IDavisVantagePro2Plus extends ISensorData {
+export interface IVantagePro2Plus extends ISensorData {
     rx_state: number;
     wind_speed_hi_last_2_min: number;
     hum: number;

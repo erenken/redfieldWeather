@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using myNOC.WeatherLink;
 using myNOC.WeatherLink.JsonConverters;
 using myNOC.WeatherLink.Models.Sensors;
+using myNOC.WeatherLink.Models.Sensors.Data;
 using myNOC.WeatherLink.Responses;
 using myNOC.WeatherLink.Sensors.Data;
 using RedfieldWeather.Entities;
@@ -79,10 +80,10 @@ namespace RedfieldWeather.WeatherLink {
 			var storedCurrentWeather = await _currentWeatherRepository.Get();
 			var storeCurrentResponse = JsonSerializer.Deserialize<CurrentResponse>(storedCurrentWeather.Weather, options);
 
-			var storedVantageSensor = storeCurrentResponse?.Sensors.FirstOrDefault(x => x?.Type == 46) as Sensor<DavisVantagePro2Plus>;
+			var storedVantageSensor = storeCurrentResponse?.Sensors.FirstOrDefault(x => x?.Type == SensorType.VantagePro2Plus) as Sensor<VantagePro2Plus>;
 			var storedVantageSensorData = storedVantageSensor?.Data?.FirstOrDefault();
 
-			var currentVantageSensor = current?.Sensors.FirstOrDefault(x => x?.Type == 46) as Sensor<DavisVantagePro2Plus>;
+			var currentVantageSensor = current?.Sensors.FirstOrDefault(x => x?.Type == SensorType.VantagePro2Plus) as Sensor<VantagePro2Plus>;
 			var currentVantageSensorData = currentVantageSensor?.Data?.FirstOrDefault();
 
 			_logger.LogInformation($"Vantage Sensor Data Stored: {storedVantageSensorData?.TimeStamp}, Retrieved: {currentVantageSensorData?.TimeStamp}");
