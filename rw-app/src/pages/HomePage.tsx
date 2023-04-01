@@ -6,8 +6,12 @@ import { CurrentWeather } from '../utilities/CurrentWeather';
 import CurrentConditions from '../components/CurrentConditions';
 import RainStorm from '../components/RainStorm';
 import AirQuaility from '../components/AirQuaility';
+import { WeatherAlerts } from '../utilities/WeatherAlerts';
 
-class HomePage extends React.Component<{ weather: CurrentWeather | undefined }> {
+class HomePage extends React.Component<{ 
+        weather: CurrentWeather | undefined;
+        alerts: WeatherAlerts | undefined
+    }> {
     render(): React.ReactNode {
         return (
             <Container>
