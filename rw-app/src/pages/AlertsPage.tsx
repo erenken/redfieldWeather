@@ -18,7 +18,7 @@ class AlertsPage extends React.Component<{
         return (
             <Container>
                 {this.features && this.features.map((feature) => (
-                    <>
+                    <div key={feature.id}>
                         <br />
                         <Card>
                             <Card.Header>
@@ -31,11 +31,11 @@ class AlertsPage extends React.Component<{
                             </Card.Body>
                             <Card.Footer>
                                 <>
-                                    Effective: {new Date(feature.properties.effective).toLocaleString()}
+                                    Issued: {new Date(feature.properties.sent).toLocaleString()}
                                 </>
                             </Card.Footer>
                         </Card>
-                    </>
+                    </div>
                 ))}
                 {(!this.features || this.features?.length === 0) &&
                     <>
