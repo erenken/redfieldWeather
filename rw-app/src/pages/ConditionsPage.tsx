@@ -8,7 +8,7 @@ import RainStorm from '../components/RainStorm';
 import AirQuaility from '../components/AirQuaility';
 import { WeatherAlerts } from '../utilities/WeatherAlerts';
 
-class HomePage extends React.Component<{ 
+class ConditionsPags extends React.Component<{ 
         weather: CurrentWeather | undefined;
         alerts: WeatherAlerts | undefined
     }> {
@@ -34,4 +34,4 @@ class HomePage extends React.Component<{
     }
 }
 
-export default withAITracking(reactPlugin, HomePage);
+export default withAITracking(reactPlugin, ConditionsPags);

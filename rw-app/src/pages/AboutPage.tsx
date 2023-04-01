@@ -30,6 +30,7 @@ class AboutPage extends React.Component {
                         One of my projects is an <a href='https://github.com/erenken/gateMonitor/blob/main/projects/remootio-angular/README.md'>Angular Service</a> that
                         works with a Remootio smart gate conroller.
                     </div>
+                    <hr />
                 </Container>
             </>
         );

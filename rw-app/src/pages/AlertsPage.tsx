@@ -40,7 +40,12 @@ class AlertsPage extends React.Component<{
                 {(!this.features || this.features?.length === 0) &&
                     <>
                         <br />
-                        <div>No alerts or warnings at this time.</div>
+                        {this.props.alerts?.updated &&
+                            <div>No alerts or warnings as of {new Date(this.props.alerts?.updated).toLocaleString()}.</div>
+                        }
+                        {!this.props.alerts?.updated &&
+                            <div>No known alerts or warning.</div>
+                        }
                     </>
                 }
             </Container>

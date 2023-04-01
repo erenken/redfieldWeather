@@ -69,6 +69,15 @@ class CurrentConditions extends React.Component<{ weather: CurrentWeather | unde
                             <Col>Rain Last 24 Hours</Col>
                             <Col align='end'>{this.vantagePro?.rainfall_last_24_hr_in} in</Col>
                         </Row>
+                        <br />
+                        <Row>
+                            <Col>UV Index</Col>
+                            <Col align='end'>{this.vantagePro?.uv_index}</Col>
+                        </Row>
+                        <Row>
+                            <Col>Solar Energy</Col>
+                            <Col align='end'>{this.vantagePro?.solar_rad.toLocaleString(undefined, { maximumFractionDigits: 2 })} W/m<sup>2</sup></Col>
+                        </Row>
                     </Card.Body>
                     {this.vantagePro &&
                         <Card.Footer>
