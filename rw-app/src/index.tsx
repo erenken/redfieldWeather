@@ -16,7 +16,7 @@ appInsights.loadAppInsights();
 
 root.render(
   <React.StrictMode>
-    <App />
+    <App name='Redfield Weather' />
   </React.StrictMode>
 );
 

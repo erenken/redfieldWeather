@@ -1,28 +1,14 @@
 import { CurrentWeather } from "./CurrentWeather";
-
-var loading = false;
-var lastData: CurrentWeather | undefined;
+import { HighLowWeather } from "./HighLowWeather";
 
 export async function getCurrentWeather(): Promise<CurrentWeather | undefined> {
-    if (!loading) {
-        loading = true;
-
-        var response = await fetch('https://redfieldweatherlink.azurewebsites.net/api/GetCurrentWeather');
-        var data = await response.json();
-        lastData = new CurrentWeather(data);
-        loading = false;
-    }
-
-    return lastData;
+  var response = await fetch('https://redfieldweatherlink.azurewebsites.net/api/GetCurrentWeather');
+  var data = await response.json();
+  return new CurrentWeather(data);
 }
 
-export async function updateCurrentWeather(setCurrentWeather: React.Dispatch<React.SetStateAction<CurrentWeather | undefined>>) {
-    const getWeather = async () => {
-      var current = await getCurrentWeather();
-      setCurrentWeather(current);
-    };
-
-    const interval = setInterval(getWeather, 60000);
-    return () => clearInterval(interval);
-  }
-
+export async function getHighLowWeather(): Promise<HighLowWeather | undefined> {
+  var response = await fetch('https://redfieldweatherlink.azurewebsites.net/api/GetHighLow');
+  var data = await response.json();
+  return new HighLowWeather(data);
+}

@@ -7,13 +7,13 @@ export class CurrentWeather {
     station_id: number = 0;
     sensors: ISensor[] = [];
     generated_at: number = 0;
-    generatedAt: Date = new Date();
+    GeneratedAt: Date = new Date();
 
     constructor(data: CurrentWeather) {
         this.station_id = data.station_id;
         this.sensors = data.sensors;
         this.generated_at = data.generated_at;
-        this.generatedAt = data.generatedAt;
+        this.GeneratedAt = data.GeneratedAt;
     }
 
     public get vantagePro2Plus(): IVantagePro2Plus | undefined {

@@ -1,4 +1,4 @@
 export enum SensorType {
     VantagePro2Plus = 46,
-    AirLink = 323
+    AirLink = 323,
 }

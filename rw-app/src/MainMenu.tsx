@@ -29,6 +29,7 @@ class MainMenu extends React.Component<{
                 <Navbar.Collapse id='responsive-navbar-nav'>
                     <Nav className='me-auto'>
                         <Nav.Link as={Link} to='/conditions'>Conditions</Nav.Link>
+                        <Nav.Link as={Link} to='/highLows'>Highs &amp; Lows</Nav.Link>
                         <Nav.Link as={Link} to='/alerts'>
                             Alerts
                             {this.alerts &&

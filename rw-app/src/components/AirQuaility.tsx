@@ -19,15 +19,11 @@ class AirQuaility extends React.Component<{ weather: CurrentWeather | undefined 
                             <Card.Body>
                                 <Row>
                                     <Col>AQI</Col>
-                                    <Col align='end'>{this.airLink?.aqi_nowcast_val?.toLocaleString(undefined, { maximumFractionDigits: 2 })}</Col>
+                                    <Col align='end'>{this.airLink?.aqi_nowcast_val?.toLocaleString(undefined, { maximumFractionDigits: 2 })} {this.airLink?.aqi_nowcast_desc}</Col>
                                 </Row>
                                 <Row>
                                     <Col>AQI Type</Col>
                                     <Col align='end'>{this.airLink?.aqi_type}</Col>
-                                </Row>
-                                <Row>
-                                    <Col>Description</Col>
-                                    <Col align='end'>{this.airLink?.aqi_nowcast_desc}</Col>
                                 </Row>
                             </Card.Body>
                             {this.airLink.LastReportTime &&
