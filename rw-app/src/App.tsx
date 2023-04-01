@@ -7,24 +7,33 @@ import { updateCurrentWeather, getCurrentWeather } from './utilities/WeatherLink
 import { RouterProvider } from 'react-router';
 import { configureRoutes } from './Routes';
 import { Col, Container, Row } from 'react-bootstrap';
+import { WeatherAlerts } from './utilities/WeatherAlerts';
+import { getActiveWeatherAlerts, updateActiveWeatherAlerts } from './utilities/NOAA';
+import HomePage from './pages/HomePage';
+
 
 const App = () => {
 
   const [currentWeather, setCurrentWeather] = useState<CurrentWeather | undefined>(undefined);
+  const [weatherAlerts, setWeatherAlerts] = useState<WeatherAlerts | undefined>(undefined);
 
   //  Update Weather every 1 minute
   useEffect(() => {
     updateCurrentWeather(setCurrentWeather).then();
+    updateActiveWeatherAlerts(setWeatherAlerts).then();
   }, []);
 
   //  If weather isn't set lets go get it.
   if (!currentWeather) {
     getCurrentWeather().then(weather => setCurrentWeather(weather));
+    getActiveWeatherAlerts().then(alerts => setWeatherAlerts(alerts));
   }
+
+  const router = configureRoutes(currentWeather, weatherAlerts);
 
   return (
     <>
-      <MainMenu weather={currentWeather} />
+      <MainMenu weather={currentWeather} alerts={weatherAlerts} />
       <br />
       <Container>
         <div>
@@ -32,7 +41,7 @@ const App = () => {
           Weather for the <a href='http://www.bing.com/maps/?q=41.7788401163317%20-86.18628'>Milton Township, Cass County Michigan</a> area.
         </div>
       </Container>
-      <RouterProvider router={configureRoutes(currentWeather)} />
+      <RouterProvider router={router} fallbackElement={<HomePage weather={currentWeather}  alerts={weatherAlerts} />} />
       <br />
       <Container>
         <hr />
