@@ -16,7 +16,8 @@ var host = new HostBuilder()
 				.AddWeatherLink()
 				.AddLogging(config => config.AddConsole())
 				.AddSingleton<IHistoricalWeatherRepository, HistoricalWeatherRepository>()
-				.AddSingleton<ICurrentWeatherRepository, CurrentWeatherRepository>();
+				.AddSingleton<ICurrentWeatherRepository, CurrentWeatherRepository>()
+				.AddSingleton<IHighLowWeatherRepository, HighLowWeatherRepository>();
 		})
 	.ConfigureAppConfiguration(config =>
 	{

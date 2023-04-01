@@ -1,20 +1,11 @@
-using Azure;
-using Azure.Data.Tables;
-
 namespace RedfieldWeather.Entities
 {
-	public class CurrentWeather : ITableEntity
+	public class CurrentWeather : WeatherTableEntity
 	{
 		public CurrentWeather()
 		{
 			PartitionKey = "weather";
 			RowKey = "current";
 		}
-
-		public string PartitionKey { get; set; } = default!;
-		public string RowKey { get; set; } = default!;
-		public string Weather { get; set; } = default!;
-		public DateTimeOffset? Timestamp { get; set; }
-		public ETag ETag { get; set; }
 	}
 }

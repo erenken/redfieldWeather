@@ -18,8 +18,8 @@ export async function getActiveWeatherAlerts(): Promise<WeatherAlerts | undefine
 
 export async function updateActiveWeatherAlerts(setWeatherAlerts: React.Dispatch<React.SetStateAction<WeatherAlerts | undefined>>) {
     const getAlerts = async () => {
-      var current = await getActiveWeatherAlerts();
-      setWeatherAlerts(current);
+      var alerts = await getActiveWeatherAlerts();
+      setWeatherAlerts(alerts);
     };
 
     const interval = setInterval(getAlerts, 60000);
