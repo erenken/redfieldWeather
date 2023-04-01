@@ -9,11 +9,11 @@ using myNOC.WeatherLink.Responses;
 using myNOC.WeatherLink.Sensors.Data;
 using RedfieldWeather.Entities;
 using RedfieldWeather.Repositories;
-using RedfieldWeather.Weather;
 using System.Text.Json;
 
-namespace RedfieldWeather.WeatherLink {
-	public class WeatherLinkGetCurrent
+namespace RedfieldWeather.WeatherLink
+{
+	public class GetCurrent
 	{
 		private readonly ILogger _logger;
 		private readonly IClient _client;
@@ -22,7 +22,7 @@ namespace RedfieldWeather.WeatherLink {
 		private readonly IHistoricalWeatherRepository _historicalWeatherRepository;
 		private readonly ICurrentWeatherRepository _currentWeatherRepository;
 
-		public WeatherLinkGetCurrent(
+		public GetCurrent(
 			ILoggerFactory loggerFactory,
 			IClient client,
 			SensorJsonConverterFactory sensorJsonConverterFactory,
@@ -31,7 +31,7 @@ namespace RedfieldWeather.WeatherLink {
 			ICurrentWeatherRepository currentWeatherRepository
 			)
 		{
-			_logger = loggerFactory.CreateLogger<WeatherLinkGetCurrent>();
+			_logger = loggerFactory.CreateLogger<GetCurrent>();
 			_client = client;
 			_sensorJsonConverterFactory = sensorJsonConverterFactory;
 			_configuration = configuration;
@@ -48,37 +48,42 @@ namespace RedfieldWeather.WeatherLink {
 			JsonSerializerOptions options = new JsonSerializerOptions();
 			options.Converters.Add(_sensorJsonConverterFactory);
 
-			var isUpdated = await IsUpdatedWeatherData(current, options);
-			if (isUpdated)
+			if (current != null)
 			{
-				var weather = JsonSerializer.Serialize(current, options);
-
-				var historicalWeather = new HistoricalWeather
+				var isUpdated = await IsUpdatedWeatherData(current, options);
+				if (isUpdated)
 				{
-					PartitionKey = current!.GeneratedAt.ToString("yyyyMMdd"),
-					RowKey = current!.GeneratedAt.ToString("s"),
-					Weather = weather
-				};
+					var weather = JsonSerializer.Serialize(current, options);
 
-				var currentWeather = new CurrentWeather { Weather = weather };
-
-				var tasks = new Task[]
+					var historicalWeather = new HistoricalWeather
 					{
-						_historicalWeatherRepository.Upsert(historicalWeather),
-						_currentWeatherRepository.Upsert(currentWeather)
+						PartitionKey = current!.GeneratedAt.ToString("yyyyMMdd"),
+						RowKey = current!.GeneratedAt.ToString("s"),
+						Weather = weather
 					};
 
-				await Task.WhenAll(tasks);
-				_logger.LogInformation("Stored New Weather Data");
+					var currentWeather = new CurrentWeather { Weather = weather };
+
+					var tasks = new Task[]
+						{
+						_historicalWeatherRepository.Upsert(historicalWeather),
+						_currentWeatherRepository.Upsert(currentWeather)
+						};
+
+					await Task.WhenAll(tasks);
+					_logger.LogInformation("Stored New Weather Data");
+				}
+				else
+					_logger.LogInformation("No new Weather Data");
 			}
 			else
-				_logger.LogInformation("No new Weather Data");
+				_logger.LogInformation("Current Data was null");
 		}
 
-		private async Task<bool> IsUpdatedWeatherData(CurrentResponse? current, JsonSerializerOptions options)
+		private async Task<bool> IsUpdatedWeatherData(WeatherDataResponse? current, JsonSerializerOptions options)
 		{
 			var storedCurrentWeather = await _currentWeatherRepository.Get();
-			var storeCurrentResponse = JsonSerializer.Deserialize<CurrentResponse>(storedCurrentWeather.Weather, options);
+			var storeCurrentResponse = JsonSerializer.Deserialize<WeatherDataResponse>(storedCurrentWeather.Weather, options);
 
 			var storedVantageSensor = storeCurrentResponse?.Sensors.FirstOrDefault(x => x?.Type == SensorType.VantagePro2Plus) as Sensor<VantagePro2Plus>;
 			var storedVantageSensorData = storedVantageSensor?.Data?.FirstOrDefault();

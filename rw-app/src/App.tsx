@@ -17,16 +17,12 @@ const App = () => {
   const [weatherAlerts, setWeatherAlerts] = useState<WeatherAlerts | undefined>(undefined);
 
   //  Update Weather every 1 minute
-  useEffect(() => {
-    updateCurrentWeather(setCurrentWeather).then();
-    updateActiveWeatherAlerts(setWeatherAlerts).then();
-  }, []);
+  updateCurrentWeather(setCurrentWeather).then();
+  updateActiveWeatherAlerts(setWeatherAlerts).then();
 
   //  If weather isn't set lets go get it.
-  if (!currentWeather) {
-    getCurrentWeather().then(weather => setCurrentWeather(weather));
-    getActiveWeatherAlerts().then(alerts => setWeatherAlerts(alerts));
-  }
+  if (!currentWeather) getCurrentWeather().then(weather => setCurrentWeather(weather));
+  if (!weatherAlerts) getActiveWeatherAlerts().then(alerts => setWeatherAlerts(alerts));
 
   return (
     <BrowserRouter >
