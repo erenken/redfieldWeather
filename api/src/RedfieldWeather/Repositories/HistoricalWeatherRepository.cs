@@ -10,5 +10,16 @@ namespace RedfieldWeather.Repositories
 		}
 
 		public override string TableName => "historical";
+
+		public async IAsyncEnumerable<HistoricalWeather> Get(int lastDays)
+		{
+			var todaysDate = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTimeOffset.UtcNow, "Eastern Standard Time").Date;
+			var oldestDate = todaysDate.AddDays(lastDays * -1).Date;
+
+			var pagedWeather = base.Get(x => x.PartitionKey.CompareTo(oldestDate.ToString("yyyyMMdd")) >= 0);
+
+			await foreach (var weather in pagedWeather)
+				yield return weather;
+		}
 	}
 }
