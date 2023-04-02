@@ -15,7 +15,7 @@ class AboutPage extends React.Component {
                         a Davis <a href='https://www.davisinstruments.com/pages/weatherlink-live'>WeatherLink Live</a>.
                     </p>
                     <p>
-                        I am in the process of converting this site to a ReactJS site using Azure Functions as the API.  There are two a Azure Functions
+                        I am in the process of converting this site to a ReactJS site using Azure Functions as the API.  There are three Azure Functions
                         <ul>
                             <li><a href='https://github.com/erenken/redfieldweather/blob/main/api/src/RedfieldWeather/WeatherLink/GetCurrent.cs'>GetCurrent</a></li>
                             <li><a href='https://github.com/erenken/redfieldweather/blob/main/api/src/RedfieldWeather/WeatherLink/GetTodayHighLow.cs'>GetTodayHighLow</a></li>
