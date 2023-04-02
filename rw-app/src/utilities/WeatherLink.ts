@@ -13,8 +13,8 @@ export async function getHighLowWeather(): Promise<HighLowWeather | undefined> {
   return new HighLowWeather(data);
 }
 
-export async function getHistoricWeather(): Promise<CurrentWeather[] | undefined> {
-  var response = await fetch('https://redfieldweatherlink.azurewebsites.net/api/GetHistoric?days=7');
+export async function getHistoricWeather(days: number): Promise<CurrentWeather[] | undefined> {
+  var response = await fetch(`https://redfieldweatherlink.azurewebsites.net/api/GetHistoric?days=${days}`);
   var data = await response.json() as CurrentWeather[];
   return data.map(x => new CurrentWeather(x));
 }

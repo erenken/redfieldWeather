@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Container, Spinner } from 'react-bootstrap';
+import { Card, Col, Container, Row, Spinner } from 'react-bootstrap';
 import { reactPlugin } from "../utilities/AppInsights";
 import { withAITracking } from "@microsoft/applicationinsights-react-js";
 import { CurrentWeather } from "../utilities/CurrentWeather";
@@ -95,14 +95,24 @@ class GraphsPage extends React.Component<INameProperty, IGraphState> {
     constructor(props: any) {
         super(props);
 
-        this.state = { historical: undefined };
+        this.state = { 
+            historical: undefined,
+            days: 6
+        };
     }
 
     async componentDidMount() {
-        let historical: CurrentWeather[] | undefined;
-        historical = await getHistoricWeather();
+        await this.getHistoric(6);
+    }
 
-        this.setState({ historical: historical });
+    private async getHistoric(days: number) {
+        let historical: CurrentWeather[] | undefined;
+        historical = await getHistoricWeather(days);
+
+        this.setState({ 
+            historical: historical,
+            days: days
+        });
     }
 
     render(): React.ReactNode {
@@ -119,12 +129,30 @@ class GraphsPage extends React.Component<INameProperty, IGraphState> {
         );
     }
 
+    async daysChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+        await this.getHistoric(parseInt(e.target.value));
+    }
+
     graphsPage(): React.ReactNode {
         let vantagePro: (IVantagePro2Plus | undefined)[] | undefined;
         vantagePro = this.state.historical?.map(x => x.vantagePro2Plus);
 
         return (
             <>
+                <Row>
+                    <Col align='end'>
+                        <select title='Days' onChange={async (e) => await this.daysChanged(e)} value={this.state.days} >
+                            <option value={0}>1 day</option>
+                            <option value={1}>2 days</option>
+                            <option value={2}>3 days</option>
+                            <option value={3}>4 days</option>
+                            <option value={4}>5 days</option>
+                            <option value={5}>6 days</option>
+                            <option value={6}>7 days</option>
+                        </select>
+                    </Col>
+                </Row>
+                <br />
                 <Card>
                     <Card.Header>
                         Temperature
