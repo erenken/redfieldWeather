@@ -224,7 +224,7 @@ class GraphsPage extends React.Component<INameProperty, IGraphState> {
                                     <Label value='Date' offset={-5} position='insideBottom' />
                                 </XAxis>
                                 <YAxis dataKey='hum'>
-                                    <Label value='in' angle={-90} position='insideLeft' />
+                                    <Label value='rain_rate_last_in' angle={-90} position='insideLeft' />
                                 </YAxis>
                                 <Line type='monotone' dataKey='rainfall_daily_in' stroke='blue' />
                                 <Line type='monotone' dataKey='rain_rate_last_in' stroke='green' />
