@@ -46,7 +46,7 @@ namespace RedfieldWeather.Weather
 
 			var objectSerializerOptions = new JsonObjectSerializer(options);
 			var response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(historical.OrderByDescending(x => x.UnixGeneratedAt), objectSerializerOptions);
+			await response.WriteAsJsonAsync(historical.OrderBy(x => x.UnixGeneratedAt), objectSerializerOptions);
 
 			_logger.LogInformation($"Returned: {historical.Count}");
 

@@ -6,3 +6,7 @@
     color: orangered;
     font-size: large;
 }
+
+.tooltipLabel {
+    background-color: lightgrey;
+}

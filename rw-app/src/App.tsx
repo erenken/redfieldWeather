@@ -10,18 +10,10 @@ import { getWeatherAlerts } from './utilities/NOAA';
 import { BrowserRouter } from 'react-router-dom';
 import { HighLowWeather } from './utilities/HighLowWeather';
 import React from 'react';
+import { IWeatherState } from './_IWeatherState';
+import { INameProperty } from './_INameProperty';
 
-interface IAppProps {
-  name: string;
-}
-
-interface IAppState {
-  currentWeather?: CurrentWeather;
-  highLowWeather?: HighLowWeather;
-  weatherAlerts?: WeatherAlerts;
-}
-
-class App extends React.Component<IAppProps, IAppState>{
+class App extends React.Component<INameProperty, IWeatherState>{
   constructor(props: any) {
     super(props);
 
@@ -29,7 +21,7 @@ class App extends React.Component<IAppProps, IAppState>{
       currentWeather: undefined,
       highLowWeather: undefined,
       weatherAlerts: undefined,
-    }
+    };
   }
 
   syncWeatherData?: any;
@@ -41,11 +33,6 @@ class App extends React.Component<IAppProps, IAppState>{
       this.syncWeatherData = setInterval(async () => await this.setWeatherState(), 60000);
     }
   }
-
-  // componentWillUnmount(): void {
-  //   if (this.syncWeatherData)
-  //     clearInterval(this.syncWeatherData);
-  // }
 
   private async setWeatherState() {
     let current: CurrentWeather | undefined;
