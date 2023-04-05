@@ -6,6 +6,7 @@ declare global {
     }
 }
 
+// eslint-disable-next-line
 Date.prototype.toDisplayFormat = function () {
     return new Date(this).toLocaleString('en-us', {
         year: 'numeric',
