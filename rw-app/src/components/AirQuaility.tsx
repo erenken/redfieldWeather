@@ -28,7 +28,7 @@ class AirQuaility extends React.Component<{ weather: CurrentWeather | undefined 
                             </Card.Body>
                             {this.airLink.LastReportTime &&
                                 <Card.Footer>
-                                    <div>{new Date(this.airLink.LastReportTime).toLocaleString()}</div>
+                                    <div>{new Date(this.airLink.LastReportTime).toDisplayFormat()}</div>
                                 </Card.Footer>
                             }
                         </Card>

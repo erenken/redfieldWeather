@@ -97,12 +97,12 @@ class GraphsPage extends React.Component<INameProperty, IGraphState> {
 
         this.state = { 
             historical: undefined,
-            days: 6
+            days: 0
         };
     }
 
     async componentDidMount() {
-        await this.getHistoric(6);
+        await this.getHistoric(0);
     }
 
     private async getHistoric(days: number) {

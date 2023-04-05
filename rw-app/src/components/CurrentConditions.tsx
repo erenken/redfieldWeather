@@ -81,7 +81,7 @@ class CurrentConditions extends React.Component<{ weather: CurrentWeather | unde
                     </Card.Body>
                     {this.vantagePro &&
                         <Card.Footer>
-                            <div>{this.vantagePro.TimeStamp.toDisplayFormat()}</div>
+                            <div>{new Date(this.vantagePro.TimeStamp).toDisplayFormat()}</div>
                         </Card.Footer>
                     }
                 </Card>

@@ -24,7 +24,7 @@ class RainStorm extends React.Component<{ weather: CurrentWeather | undefined }>
                                     <>
                                         <Row>
                                             <Col>Started</Col>
-                                            <Col align='end'>{new Date(this.vantagePro?.RainStormStartTime).toLocaleString()}</Col>
+                                            <Col align='end'>{new Date(this.vantagePro?.RainStormStartTime).toDisplayFormat()}</Col>
                                         </Row>
                                         <Row>
                                             <Col>Length</Col>
@@ -55,11 +55,11 @@ class RainStorm extends React.Component<{ weather: CurrentWeather | undefined }>
                             <Card.Body>
                                 <Row>
                                     <Col>Started</Col>
-                                    <Col align='end'>{new Date(this.vantagePro.RainStormLastStartAt).toLocaleString()}</Col>
+                                    <Col align='end'>{new Date(this.vantagePro.RainStormLastStartAt).toDisplayFormat()}</Col>
                                 </Row>
                                 <Row>
                                     <Col>Ended</Col>
-                                    <Col align='end'>{new Date(this.vantagePro.RainStormLastEndAt).toLocaleString()}</Col>
+                                    <Col align='end'>{new Date(this.vantagePro.RainStormLastEndAt).toDisplayFormat()}</Col>
                                 </Row>
                                 <Row>
                                     <Col>Duration</Col>

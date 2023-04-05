@@ -1,5 +1,9 @@
-interface Date {
-    toDisplayFormat(): string;
+export {}
+
+declare global {
+    interface Date {
+        toDisplayFormat(): string;
+    }
 }
 
 Date.prototype.toDisplayFormat = function () {
@@ -11,5 +15,3 @@ Date.prototype.toDisplayFormat = function () {
         minute: '2-digit'
     });
 };
-
-export {};

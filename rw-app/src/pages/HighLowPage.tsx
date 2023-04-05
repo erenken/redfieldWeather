@@ -34,12 +34,12 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>High</Col>
                                 <Col align='end'>{this.vantageProArchive?.temp_hi}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.TemperatureHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.TemperatureHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Low</Col>
                                 <Col align='end'>{this.vantageProArchive?.temp_lo}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.TemperatureLowAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.TemperatureLowAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Average</Col>
@@ -50,30 +50,30 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>Heat Index</Col>
                                 <Col align='end'>{this.vantageProArchive?.heat_index_hi}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.HeatIndexHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.HeatIndexHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             {this.vantageProArchive?.temp_lo && this.vantageProArchive?.temp_lo <= 45 &&
                                 <>
                                     <Row>
                                         <Col>Low Wind Chill</Col>
                                         <Col align='end'>{this.vantageProArchive?.wind_chill_lo}&deg; F</Col>
-                                        <Col align='end'>{new Date(this.vantageProArchive?.WindChillLowAt!).toLocaleString()}</Col>
+                                        <Col align='end'>{new Date(this.vantageProArchive?.WindChillLowAt!).toDisplayFormat()}</Col>
                                     </Row>
                                 </>
                             }
                             <Row>
                                 <Col>Feels Like High</Col>
                                 <Col align='end'>{this.vantageProArchive?.thsw_index_hi}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.THSWIndexHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.THSWIndexHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Feels Like Low</Col>
                                 <Col align='end'>{this.vantageProArchive?.thsw_index_lo}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.thsw_index_lo_at!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.thsw_index_lo_at!).toDisplayFormat()}</Col>
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>
                     <br />
@@ -85,7 +85,7 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>High</Col>
                                 <Col align='end'>{this.vantageProArchive?.wind_speed_hi} mph</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.WindSpeedHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.WindSpeedHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Total Run</Col>
@@ -94,7 +94,7 @@ class HighLowPage extends React.Component<{
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>
                     <br />
@@ -106,7 +106,7 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>Rate High</Col>
                                 <Col align='end'>{this.vantageProArchive?.rain_rate_hi_in} in</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.RainRateHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.RainRateHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Total Day</Col>
@@ -125,7 +125,7 @@ class HighLowPage extends React.Component<{
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>                    <br />
                     <Card>
@@ -136,16 +136,16 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>High</Col>
                                 <Col align='end'>{this.vantageProArchive?.hum_hi}%</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.HumidityHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.HumidityHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Low</Col>
                                 <Col align='end'>{this.vantageProArchive?.hum_lo}%</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.HumidityLowAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.HumidityLowAt!).toDisplayFormat()}</Col>
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>
                     <br />
@@ -157,16 +157,16 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>High</Col>
                                 <Col align='end'>{this.vantageProArchive?.dew_point_hi}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.DewPointHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.DewPointHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Low</Col>
                                 <Col align='end'>{this.vantageProArchive?.dew_point_lo}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.DewPointLowAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.DewPointLowAt!).toDisplayFormat()}</Col>
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>
                     <br />
@@ -178,7 +178,7 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>High</Col>
                                 <Col align='end'>{this.vantageProArchive?.uv_index_hi} Index</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.UVIndexHighAt!).toLocaleString()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.UVIndexHighAt!).toDisplayFormat()}</Col>
                             </Row>
                             <Row>
                                 <Col>Average</Col>
@@ -192,7 +192,7 @@ class HighLowPage extends React.Component<{
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>
                     <br />
@@ -218,7 +218,7 @@ class HighLowPage extends React.Component<{
                             </Row>
                         </Card.Body>
                         <Card.Footer>
-                            {new Date(this.props.highLows?.GeneratedAt!).toLocaleString()}
+                            {new Date(this.props.highLows?.GeneratedAt!).toDisplayFormat()}
                         </Card.Footer>
                     </Card>
                 </Container>
