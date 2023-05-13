@@ -13,6 +13,7 @@ Date.prototype.toDisplayFormat = function () {
         month: 'numeric',
         day: 'numeric',
         hour: 'numeric',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'UTC'
     });
 };
