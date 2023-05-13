@@ -69,7 +69,7 @@ class HighLowPage extends React.Component<{
                             <Row>
                                 <Col>Feels Like Low</Col>
                                 <Col align='end'>{this.vantageProArchive?.thsw_index_lo}&deg; F</Col>
-                                <Col align='end'>{new Date(this.vantageProArchive?.thsw_index_lo_at!).toDisplayFormat()}</Col>
+                                <Col align='end'>{new Date(this.vantageProArchive?.THSWIndexLowAt!).toDisplayFormat()}</Col>
                             </Row>
                         </Card.Body>
                         <Card.Footer>
