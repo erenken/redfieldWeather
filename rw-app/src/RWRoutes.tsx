@@ -8,6 +8,7 @@ import React from "react";
 import { HighLowWeather } from "./utilities/HighLowWeather";
 import HighLowPage from "./pages/HighLowPage";
 import GraphsPage from "./pages/GraphsPage";
+import MapsPage from "./pages/MapsPage";
 
 class RWRoutes extends React.Component<{
   weather: CurrentWeather | undefined;
@@ -20,6 +21,7 @@ class RWRoutes extends React.Component<{
         <Route key='conditions' path='/conditions' element={<ConditionsPags weather={this.props.weather} alerts={this.props.alerts} />} />
         <Route key='highLow' path='/highLows' element={<HighLowPage highLows={this.props.highLows} weather={this.props.weather} />} />
         <Route key='graphs' path='/graphs' element={<GraphsPage name='Graphs' />} />
+        <Route key='maps' path='/maps' element={<MapsPage weather={this.props.weather}  />} />
         <Route key='alerts' path='/alerts' element={<AlertsPage alerts={this.props.alerts} />} />
         <Route key='about' path='/about' element={<AboutPage />} />
         <Route key='default' path='*' element={<ConditionsPags weather={this.props.weather} alerts={this.props.alerts} />} />
