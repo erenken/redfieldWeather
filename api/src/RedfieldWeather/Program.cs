@@ -9,7 +9,7 @@ using RedfieldWeather.Repositories;
 using System.Text.Json;
 
 var host = new HostBuilder()
-	.ConfigureFunctionsWorkerDefaults()
+	.ConfigureFunctionsWebApplication()
 		.ConfigureServices(services =>
 		{
 			services
