@@ -1,0 +1,77 @@
+@page "/graphs"
+@implements IDisposable
+@inject WeatherClient Client
+@inject ILogger<Graphs> Logger
+<PageTitle>Weather Graphs | Redfield Weather</PageTitle>
+<h1>Weather History</h1>
+<div class="toolbar">
+    <label for="history-days">Date Range</label>
+    <select id="history-days" @bind="days" @bind:after="LoadAsync" disabled="@loading">
+        <option value="1">Last Day</option>
+        <option value="3">Last 3 Days</option>
+        <option value="7">Last 7 Days</option>
+        <option value="30">Last 30 Days</option>
+    </select>
+</div>
+@if (loading)
+{
+    <WeatherLoading Message="Loading historical observations…" />
+}
+else if (error is not null)
+{
+    <p class="notice" role="alert">@error</p>
+    <button @onclick="LoadAsync">Try Again</button>
+}
+else
+{
+    <p>@readings.Count station observations. Times use your browser's local timezone.</p>
+    <WeatherChart Title="Temperature" Unit="°F" Readings="readings" Series="Temperature" />
+    <WeatherChart Title="Wind" Unit="mph" Readings="readings" Series="Wind" />
+    <WeatherChart Title="Humidity" Unit="%" Readings="readings" Series="Humidity" />
+    <WeatherChart Title="Rain Total" Unit="in" Readings="readings" Series="Rain" />
+    <WeatherChart Title="Rain Rate" Unit="in/hr" Readings="readings" Series="RainRate" Minimum="0" />
+    <WeatherChart Title="UV" Unit="index" Readings="readings" Series="Uv" />
+}
+
+@code {
+    private int days = 1;
+    private bool loading = true;
+    private string? error;
+    private List<SensorReading<VantagePro2Plus>> readings = [];
+    private readonly CancellationTokenSource lifetime = new();
+    private static readonly ChartSeries<VantagePro2Plus>[] Temperature = [new("Temperature", reading => reading.Temperature, "#075f9c")];
+    private static readonly ChartSeries<VantagePro2Plus>[] Wind = [new("Wind Speed", reading => reading.WindSpeed, "#075f9c")];
+    private static readonly ChartSeries<VantagePro2Plus>[] Humidity = [new("Humidity", reading => reading.Humidity, "#075f9c")];
+    private static readonly ChartSeries<VantagePro2Plus>[] Rain = [new("Daily Rain", reading => reading.RainfallDaily_in, "#075f9c")];
+    private static readonly ChartSeries<VantagePro2Plus>[] RainRate = [new("Rain Rate", reading => reading.RainRateLast_in, "#267744")];
+    private static readonly ChartSeries<VantagePro2Plus>[] Uv = [new("UV Index", reading => reading.UVIndex, "#075f9c")];
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        loading = true;
+        error = null;
+        try
+        {
+            var history = await Client.GetHistoryAsync(days, lifetime.Token);
+            readings = history.Select(snapshot => snapshot.Station).OfType<SensorReading<VantagePro2Plus>>()
+                .Where(reading => reading.Time().HasValue).OrderBy(reading => reading.Time()).ToList();
+        }
+        catch (Exception exception) when (exception is HttpRequestException or System.Text.Json.JsonException or OperationCanceledException)
+        {
+            if (!lifetime.IsCancellationRequested)
+            {
+                Logger.LogWarning(exception, "Unable to load weather history for {Days} days", days);
+                error = "Weather history could not be loaded. Please try again.";
+            }
+        }
+        finally { loading = false; }
+    }
+
+    public void Dispose()
+    {
+        lifetime.Cancel();
+        lifetime.Dispose();
+    }
+}

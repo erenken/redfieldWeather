@@ -1,48 +1,21 @@
-using System.Net;
-using System.Text.Json;
-using Azure.Core.Serialization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using myNOC.WeatherLink.JsonConverters;
-using myNOC.WeatherLink.Responses;
 using RedfieldWeather.Repositories;
 
-namespace RedfieldWeather.Weather
+namespace RedfieldWeather.Weather;
+
+public sealed class GetCurrentWeather(ICurrentWeatherRepository repository, ILogger<GetCurrentWeather> logger)
 {
-    public class GetCurrentWeather
+    [Function("GetCurrentWeather")]
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest request)
     {
-        private readonly ILogger _logger;
-		private readonly SensorJsonConverterFactory _sensorJsonConverterFactory;
-		private readonly ICurrentWeatherRepository _currentWeatherRepository;
+        var current = await repository.Get(request.HttpContext.RequestAborted);
+        if (string.IsNullOrWhiteSpace(current.Weather))
+            return new NoContentResult();
 
-		public GetCurrentWeather(
-			ILoggerFactory loggerFactory,
-			SensorJsonConverterFactory sensorJsonConverterFactory,
-			ICurrentWeatherRepository currentWeatherRepository
-			)
-        {
-            _logger = loggerFactory.CreateLogger<GetCurrentWeather>();
-			_sensorJsonConverterFactory = sensorJsonConverterFactory;
-			_currentWeatherRepository = currentWeatherRepository;
-		}
-
-        [Function("GetCurrentWeather")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
-        {
-			JsonSerializerOptions options = new JsonSerializerOptions();
-			options.Converters.Add(_sensorJsonConverterFactory);
-
-			var currentWeather = await _currentWeatherRepository.Get();
-			var weather = JsonSerializer.Deserialize<WeatherDataResponse>(currentWeather.Weather, options);
-
-			var objectSerializerOptions = new JsonObjectSerializer(options);
-			var response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(weather, objectSerializerOptions);
-
-			_logger.LogInformation($"Current weather timestamp: {currentWeather.Timestamp}");
-
-            return response;
-        }
+        logger.LogInformation("Current weather timestamp: {Timestamp}", current.Timestamp);
+        return new ContentResult { Content = current.Weather, ContentType = "application/json", StatusCode = StatusCodes.Status200OK };
     }
 }

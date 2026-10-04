@@ -1,0 +1,70 @@
+@page "/"
+@page "/conditions"
+@inherits WeatherPage
+<PageTitle>Current Conditions | Redfield Weather</PageTitle>
+<h1>Current Conditions</h1>
+@if (!Dashboard.IsLoading && Dashboard.Current is null)
+{
+    <p class="notice">No station observations are available yet.</p>
+}
+@if (Dashboard.Alerts.Count > 0)
+{
+    <p class="notice"><a href="alerts">@Dashboard.Alerts.Count active weather alert(s)</a></p>
+}
+<div class="card-grid">
+    <MetricCard Title="Temperature and Humidity" Reading="Dashboard.Current?.Station" Metrics="Temperature" />
+    <MetricCard Title="Wind" Reading="Dashboard.Current?.Station" Metrics="Wind" />
+    <MetricCard Title="Rain and Sunshine" Reading="Dashboard.Current?.Station" Metrics="Rain" />
+    @if (Dashboard.Current?.AirQuality is { } air)
+    {
+        <section class="card">
+            <h2>Air Quality</h2>
+            <dl class="metrics">
+                <dt>AQI Nowcast</dt><dd>@air.Format(reading => reading.AQINowCast) · @air.Text(reading => reading.AQINowCastDescription)</dd>
+                <dt>AQI Type</dt><dd>@air.Text(reading => reading.AQIType)</dd>
+                <dt>PM 2.5</dt><dd>@air.Format(reading => reading.PM2p5, " µg/m³")</dd>
+                <dt>PM 10</dt><dd>@air.Format(reading => reading.PM10, " µg/m³")</dd>
+            </dl>
+            <p class="timestamp">Reported @SensorReading.FormatTime(air.Time(reading => reading.UnixLastReportTime))</p>
+        </section>
+    }
+    @if (Dashboard.Current?.Station is { } station)
+    {
+        @if (station.Number(reading => reading.UnixRainStormStartTime) is > 0)
+        {
+            <section class="card">
+                <h2>Current Rain Storm</h2>
+                <dl class="metrics">
+                    <dt>Started</dt><dd>@SensorReading.FormatTime(station.Time(reading => reading.UnixRainStormStartTime))</dd>
+                    <dt>Rain Total</dt><dd>@station.Format(reading => reading.RainStorm_in, " in")</dd>
+                </dl>
+                <p>A storm ends after 24 hours without rain.</p>
+            </section>
+        }
+        @if (station.Number(reading => reading.UnixRainStormLastStartAt) is > 0)
+        {
+            <section class="card">
+                <h2>Last Rain Storm</h2>
+                <dl class="metrics">
+                    <dt>Started</dt><dd>@SensorReading.FormatTime(station.Time(reading => reading.UnixRainStormLastStartAt))</dd>
+                    <dt>Ended</dt><dd>@SensorReading.FormatTime(station.Time(reading => reading.UnixRainStormLastEndAt))</dd>
+                    <dt>Rain Total</dt><dd>@station.Format(reading => reading.RainStormLast_in, " in")</dd>
+                </dl>
+            </section>
+        }
+    }
+</div>
+
+@code {
+    private static readonly WeatherMetric<VantagePro2Plus>[] Temperature = [
+        new("Temperature", reading => reading.Temperature, " °F"), new("Feels Like", reading => reading.THSWIndex, " °F"),
+        new("Wind Chill", reading => reading.WindChill, " °F"), new("Humidity", reading => reading.Humidity, " %"),
+        new("Dew Point", reading => reading.DewPoint, " °F")];
+    private static readonly WeatherMetric<VantagePro2Plus>[] Wind = [
+        new("Speed", reading => reading.WindSpeed, " mph"), new("Direction", reading => reading.WindDir, "°"),
+        new("Gust (10 Minutes)", reading => reading.WindSpeedHiLast_10Min, " mph")];
+    private static readonly WeatherMetric<VantagePro2Plus>[] Rain = [
+        new("Rain Rate", reading => reading.RainRateLast_in, " in/hr"), new("Daily Rain", reading => reading.RainfallDaily_in, " in"),
+        new("Last 24 Hours", reading => reading.RainfallLast_24Hr_in, " in"), new("UV Index", reading => reading.UVIndex),
+        new("Solar Radiation", reading => reading.SolarRadiation, " W/m²")];
+}

@@ -83,6 +83,8 @@ namespace RedfieldWeather.WeatherLink
 		private async Task<bool> IsUpdatedWeatherData(WeatherDataResponse? current, JsonSerializerOptions options)
 		{
 			var storedCurrentWeather = await _currentWeatherRepository.Get();
+			if (string.IsNullOrWhiteSpace(storedCurrentWeather.Weather))
+				return true;
 			var storeCurrentResponse = JsonSerializer.Deserialize<WeatherDataResponse>(storedCurrentWeather.Weather, options);
 
 			var storedVantageSensor = storeCurrentResponse?.Sensors.FirstOrDefault(x => x?.Type == SensorType.VantagePro2Plus) as Sensor<VantagePro2Plus>;
@@ -91,7 +93,7 @@ namespace RedfieldWeather.WeatherLink
 			var currentVantageSensor = current?.Sensors.FirstOrDefault(x => x?.Type == SensorType.VantagePro2Plus) as Sensor<VantagePro2Plus>;
 			var currentVantageSensorData = currentVantageSensor?.Data?.FirstOrDefault();
 
-			_logger.LogInformation($"Vantage Sensor Data Stored: {storedVantageSensorData?.TimeStamp}, Retrieved: {currentVantageSensorData?.TimeStamp}");
+			_logger.LogInformation("Vantage sensor data stored: {Stored}, retrieved: {Retrieved}", storedVantageSensorData?.TimeStamp, currentVantageSensorData?.TimeStamp);
 
 			return (storedVantageSensorData?.UnixTimeStamp != currentVantageSensorData?.UnixTimeStamp);
 		}

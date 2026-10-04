@@ -1,0 +1,92 @@
+@using System.Globalization
+@typeparam TReading
+<section class="card">
+    <h2>@Title (@Unit)</h2>
+    @if (Readings.Count == 0)
+    {
+        <p>No observations available.</p>
+    }
+    else
+    {
+        <svg class="chart" viewBox="0 0 900 300" role="img" aria-label="@($"{Title} history in {Unit}")">
+            @foreach (var fraction in new double[] { 0, .25, .5, .75, 1 })
+            {
+                var vertical = 250 - fraction * 225;
+                <line class="grid" x1="65" y1="@Svg(vertical)" x2="875" y2="@Svg(vertical)" />
+                <g><text x="55" y="@Svg(vertical + 4)" text-anchor="end">@((minimum + fraction * (maximum - minimum)).ToString("0.##"))</text></g>
+            }
+            @foreach (var series in Series)
+            {
+                var points = Points(series.Selector);
+                <polyline points="@string.Join(" ", points.Select(point => $"{Svg(point.Horizontal)},{Svg(point.Vertical)}"))" fill="none" stroke="@series.Color" stroke-width="2" />
+                @foreach (var point in points)
+                {
+                    <circle class="chart-point" cx="@Svg(point.Horizontal)" cy="@Svg(point.Vertical)" r="6" stroke="@series.Color">
+                        <title>@series.Label: @point.Reading.Format(series.Selector, $" {Unit}") — @SensorReading.FormatTime(point.Reading.Time())</title>
+                    </circle>
+                }
+            }
+            <g><text x="65" y="280">@SensorReading.FormatTime(Readings[0].Time())</text></g>
+            <g><text x="875" y="280" text-anchor="end">@SensorReading.FormatTime(Readings[^1].Time())</text></g>
+        </svg>
+        <div class="legend">
+            @foreach (var series in Series)
+            {
+                <span style="border-color: @series.Color">@series.Label</span>
+            }
+        </div>
+        <details>
+            <summary>Latest Readings</summary>
+            <dl class="metrics">
+                @foreach (var series in Series)
+                {
+                    <dt>@series.Label</dt><dd>@Readings[^1].Format(series.Selector, $" {Unit}")</dd>
+                }
+            </dl>
+        </details>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter, EditorRequired] public string Unit { get; set; } = "";
+    [Parameter, EditorRequired] public List<SensorReading<TReading>> Readings { get; set; } = [];
+    [Parameter, EditorRequired] public ChartSeries<TReading>[] Series { get; set; } = [];
+    [Parameter] public double? Minimum { get; set; }
+    private double minimum;
+    private double maximum;
+
+    protected override void OnParametersSet()
+    {
+        var values = Readings.SelectMany(reading => Series.Select(series => reading.Number(series.Selector)))
+            .OfType<double>().ToArray();
+        minimum = Minimum ?? (values.Length > 0 ? values.Min() : 0);
+        maximum = values.Length > 0 ? values.Max() : 1;
+        if (maximum <= minimum)
+        {
+            if (Minimum.HasValue)
+                maximum = minimum + 1;
+            else
+            {
+                minimum -= .5;
+                maximum += .5;
+            }
+        }
+    }
+
+    private List<ChartPoint> Points(Func<TReading, double?> selector)
+    {
+        var firstTime = Readings[0].Time()!.Value.ToUnixTimeSeconds();
+        var timeRange = Math.Max(1, Readings[^1].Time()!.Value.ToUnixTimeSeconds() - firstTime);
+        return Readings.Where(reading => reading.Number(selector).HasValue).Select(reading =>
+        {
+            var horizontal = 65 + (reading.Time()!.Value.ToUnixTimeSeconds() - firstTime) * 810d / timeRange;
+            var vertical = 250 - (reading.Number(selector)!.Value - minimum) * 225 / (maximum - minimum);
+            return new ChartPoint(horizontal, vertical, reading);
+        }).ToList();
+    }
+
+    private sealed record ChartPoint(double Horizontal, double Vertical, SensorReading<TReading> Reading);
+
+    private static string Svg(double value) => value.ToString("0.##", CultureInfo.InvariantCulture);
+}

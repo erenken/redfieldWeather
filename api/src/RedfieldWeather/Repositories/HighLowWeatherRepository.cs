@@ -11,11 +11,11 @@ namespace RedfieldWeather.Repositories
 
 		public override string TableName => "current";
 
-		public async Task<HighLowWeather> Get()
+		public async Task<HighLowWeather> Get(CancellationToken cancellationToken = default)
 		{
 			HighLowWeather highLowWeather = new();
 
-			var pagedWeather = base.Get(x => x.PartitionKey == highLowWeather.PartitionKey && x.RowKey == highLowWeather.RowKey);
+			var pagedWeather = base.Get(x => x.PartitionKey == highLowWeather.PartitionKey && x.RowKey == highLowWeather.RowKey, cancellationToken: cancellationToken);
 
 			await foreach (var weather in pagedWeather)
 				highLowWeather = weather;

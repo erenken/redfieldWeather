@@ -1,0 +1,11 @@
+@page "/about"
+<PageTitle>About | Redfield Weather</PageTitle>
+<h1>About Redfield Weather</h1>
+<section class="card prose">
+    <h2>Local Observations, Online</h2>
+    <p>Weather observations come from a Davis Vantage Pro2 weather station and Davis AirLink in Milton Township, Cass County, Michigan. A WeatherLink Live device uploads the station readings to <a href="https://www.weatherlink.com/embeddablePage/show/94b5cab2a1f34a9c889e09cf33b9b2b8/summary">WeatherLink</a>.</p>
+    <p>This single-page application runs entirely in your browser using .NET 10 Blazor WebAssembly and is hosted by Azure Static Web Apps. A separate .NET 10 Azure Functions isolated-worker backend collects current conditions and daily highs and lows every five minutes, stores snapshots in Azure Table Storage, and serves the weather API.</p>
+    <p>The app refreshes current conditions, highs and lows, and National Weather Service alerts every minute. Graphs load stored observations for the selected date range. Missing readings appear as a dash instead of a zero.</p>
+    <p>The application uses the <a href="https://www.nuget.org/packages/myNOC.WeatherLink">myNOC.WeatherLink SDK</a>. Source code is available in the <a href="https://github.com/erenken/redfieldweather">Redfield Weather repository</a>.</p>
+    <p>This is a personal weather station, not an official emergency notification service. For critical decisions, consult the <a href="https://www.weather.gov/">National Weather Service</a> and local authorities.</p>
+</section>

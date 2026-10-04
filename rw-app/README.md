@@ -1,46 +1,125 @@
-# Getting Started with Create React App
+# Redfield Weather frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A standalone **.NET 10 Blazor WebAssembly SPA** hosted on Azure Static Web Apps. It runs in the browser and calls the separate weather Function App and National Weather Service. There is no React application, npm dependency tree, SSR, or web server to deploy.
 
-## Available Scripts
+## Run locally
 
-In the project directory, you can run:
+To run the full stack, use the [Aspire AppHost](../apphost/README.md). It starts this app, Functions, and managed local storage. Aspire selects the dedicated `Aspire` environment with a local API URL; no Development override is needed for that mode.
 
-### `npm start`
+From the repository root, with .NET 10 installed:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```powershell
+dotnet run --project rw-app/RedfieldWeather.App.csproj
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Open `http://localhost:5000`. The launch profile selects Development. The default API is `https://redfieldweatherlink.azurewebsites.net/api/`; it must allow localhost in CORS, or you can run the [API locally](../api/README.md#local-development).
 
-### `npm test`
+## Configuration
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Public configuration lives in [wwwroot/appsettings.json](./wwwroot/appsettings.json):
 
-### `npm run build`
+| Key | Meaning |
+| --- | --- |
+| `Weather:ApiBaseUrl` | Absolute API base URL, **including the trailing `/api/` slash** |
+| `Weather:AlertPoint` | Latitude/longitude for NWS active alerts |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+For local backend development, create ignored `wwwroot/appsettings.Development.json`:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```json
+{
+  "Weather": {
+    "ApiBaseUrl": "http://localhost:7071/api/"
+  }
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The local Function App example allows `http://localhost:5000`. If you change the port, also update backend CORS. Production reads the main `appsettings.json`; environment overrides only apply when the Blazor hosting environment selects that environment.
 
-### `npm run eject`
+**Every file in `wwwroot` is downloadable by visitors.** Never put WeatherLink credentials, storage connections, deployment tokens, or other secrets here. Static Web Apps application settings do not rewrite static Blazor configuration: change public JSON before publishing when targeting another backend.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Pages and behavior
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Route | Content |
+| --- | --- |
+| `/`, `/conditions` | Current observations, rain storms, and AirLink readings |
+| `/highLows` | Daily statistics and high/low times |
+| `/graphs` | SVG history charts and selectable 1/3/7/30-day ranges |
+| `/alerts` | NWS alerts, descriptions, and instructions |
+| `/about` | Station and application information |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Current conditions, highs/lows, and alerts load independently and refresh every minute without overlapping polls.
+- Request failures do not block other feeds; previously loaded data remains visible with a notice.
+- Missing readings display as `—`, not zero. Empty snapshots show a no-observations notice.
+- Unix timestamps display in the browser's local timezone. Daily statistics use the Eastern-time station day.
+- Graphs reload when opened or when the selected range changes; they do not automatically poll.
+- Rain totals and rates have separate charts because their units differ. SVG horizontal axes use actual observation timestamps; legends and latest-readings details provide textual values.
+- Rain-rate axes start at zero, including when every observation is zero. Hover over a chart point to see its series, value, unit, and local timestamp instead of the chart title.
+- Browser Application Insights is not configured; the former React-specific telemetry integration was removed with React.
+- Startup and data-loading screens show a locally bundled animated weather GIF, with a still image for visitors who prefer reduced motion. No third-party image service is used.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Code map
 
-## Learn More
+| Location | Responsibility |
+| --- | --- |
+| [Program.cs](./Program.cs) | WebAssembly startup and services |
+| [App.razor](./App.razor) | Routing and not-found UI |
+| [Layout/](./Layout/) | Navigation and cancellable refresh loop |
+| [Pages/](./Pages/) | Dashboard routes |
+| [Components/](./Components/) | Cards, SVG charts, and shared-state subscriptions |
+| [Models/](./Models/) | WeatherLink/NWS models and source-generated JSON metadata |
+| [Services/](./Services/) | HTTP client, refresh state, and per-feed failures |
+| [wwwroot/](./wwwroot/) | Public assets and deployment configuration |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The client uses **myNOC.WeatherLink 0.2.4** directly: `WeatherDataResponse` contains sensors deserialized by the package's `SensorJsonConverterFactory` into `Sensor<TReading>`. A `SensorFactory` is configured with the four supported payloads: `VantagePro2Plus`, `AirLink`, `VantagePro2PlusArchive`, and `AirLinkArchive`. The SDK handles sensor/data-structure matching. `WeatherSnapshot` only selects typed observations and caches their formatting wrappers; it no longer copies the wire envelope or deserializes JSON inside `FindSensor`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+`SensorReading<TReading>` wraps the SDK object (`Value`) and supplies null-safe, culture-aware formatting with compile-time-checked selectors:
+
+```csharp
+air.Format(reading => reading.PM2p5, " µg/m³");
+station.Format(reading => reading.Temperature, " °F");
+station.Time(reading => reading.UnixRainStormStartTime);
+```
+
+Cards use `WeatherMetric<TReading>` and charts use `ChartSeries<TReading>` with the same typed delegates, rather than string JSON keys. Missing/nonfinite numbers still display as `—`; missing timestamps remain absent rather than turning into the Unix epoch. Empty/unsupported sensors are skipped. WeatherLink API authentication and polling remain in the backend; no authenticated SDK client is registered in the browser.
+
+JSON mappings now live in the SDK's models, rather than duplicated `JsonPropertyName` attributes in the app. Do not apply a global snake-case policy to these models: computed DateTimeOffset properties can collide with explicitly mapped Unix timestamp fields.
+
+`WeatherJsonContext.WithSensors` attaches the SDK converter to source-generated response metadata. The converter also uses reflection and creates generic sensor/converter types internally. The project intentionally enables JSON reflection and roots the `myNOC.WeatherLink` assembly during trimming so its model properties and constructors survive Release publishing. This trades a somewhat larger download for direct reuse of the package's converter. Recheck a published WASM build whenever updating the SDK; a successful Debug build alone is not enough.
+
+No external charting JavaScript or CSS CDN is required.
+
+## Build and deploy
+
+```powershell
+dotnet publish rw-app/RedfieldWeather.App.csproj --configuration Release --output artifacts/website -warnaserror
+```
+
+The deployment root is **`artifacts/website/wwwroot`**, not the project or its parent publish directory. It contains `index.html`, `_framework`, configuration, styles, and favicons.
+
+[websiteDeploy.yml](../.github/workflows/websiteDeploy.yml) installs .NET 10, publishes, and uploads prebuilt assets with `skip_app_build: true`, avoiding dependence on the Oryx container's SDK. `api_location` is empty because collectors and API stay in the separate Function App.
+
+Compiler/build warnings fail the workflow. After publishing, smoke-test the deployed WASM output rather than only the Debug app: its trimmed assemblies must still support the WeatherLink sensor converter. A PR preview uses the production API by default; it does not deploy this branch's updated Functions code. Check both production workflows after merging and reload `/graphs` directly to confirm the SPA fallback.
+
+Required GitHub secret:
+
+```text
+AZURE_STATIC_WEB_APPS_API_TOKEN_AMBITIOUS_FLOWER_053A4890F
+```
+
+Same-repository PRs receive previews, removed when the PR closes. Fork PRs build without deploying. Preview sites call the configured backend, not an automatically created API preview; allow preview origins in backend CORS or configure a staging backend.
+
+[staticwebapp.config.json](./wwwroot/staticwebapp.config.json) rewrites client routes to `index.html`, excludes framework/static/API assets, and supplies WASM MIME types. Missing framework files must return missing-file responses rather than HTML.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| Browser blocks API requests | Function App CORS must include the exact current origin, including the development port |
+| Wrong API endpoint | `ApiBaseUrl` must be absolute and end with `/api/` |
+| Direct `/graphs` reload returns 404 | Confirm the SWA configuration was uploaded at the deployment root |
+| Blazor never loads | Inspect `_framework` requests, WASM MIME types, and console errors; publish the full web root |
+| Old configuration | Reload and inspect served `appsettings.json`; this is not a PWA and has no service-worker cache |
+| Alerts fail independently | NWS is a separate public service; failures are reported per feed |
+| All readings are dashes | Verify the API has collected observations and returned supported sensors |
+
+See the [main README](../README.md) for architecture and [API README](../api/README.md) for backend setup.

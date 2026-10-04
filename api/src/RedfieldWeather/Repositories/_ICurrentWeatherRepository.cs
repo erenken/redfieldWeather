@@ -4,6 +4,6 @@ namespace RedfieldWeather.Repositories
 {
 	public interface ICurrentWeatherRepository : IWeatherRepository<CurrentWeather>
 	{
-		Task<CurrentWeather> Get();
+		Task<CurrentWeather> Get(CancellationToken cancellationToken = default);
 	}
 }

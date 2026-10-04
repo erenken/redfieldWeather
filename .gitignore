@@ -43,6 +43,7 @@ dlldata.c
 # DNX
 project.lock.json
 artifacts/
+.azurite/
 
 *_i.c
 *_p.c
@@ -191,6 +192,8 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+**/local.settings.json
+rw-app/wwwroot/appsettings.Development.json
 orleans.codegen.cs
 
 # Since there are multiple workflows, uncomment next line to ignore bower_components
