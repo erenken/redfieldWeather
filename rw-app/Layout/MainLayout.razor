@@ -1,0 +1,70 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject WeatherDashboard Dashboard
+
+<header>
+    <nav aria-label="Main navigation">
+        <a class="brand" href="conditions">Redfield Weather</a>
+        <NavLink href="conditions">Conditions</NavLink>
+        <NavLink href="highLows">Highs and Lows</NavLink>
+        <NavLink href="graphs">Graphs</NavLink>
+        <NavLink href="alerts">Alerts @(Dashboard.Alerts.Count > 0 ? $"({Dashboard.Alerts.Count})" : "")</NavLink>
+        <NavLink href="about">About</NavLink>
+    </nav>
+</header>
+<main>
+    <p class="location">Weather for <a href="https://www.bing.com/maps/?q=41.7788401163317%20-86.18628">Milton Township, Cass County, Michigan</a>.</p>
+    @if (Dashboard.IsLoading)
+    {
+        <WeatherLoading />
+    }
+    @foreach (var error in Dashboard.Errors.Values)
+    {
+        <p class="notice" role="alert">@error</p>
+    }
+    @Body
+</main>
+<footer>
+    <span>Refresh attempted @SensorReading.FormatTime(Dashboard.RefreshedAt). Updates every minute.</span>
+    <a href="https://mynoc.com">myNOC LLC</a>
+</footer>
+
+@code {
+    private readonly CancellationTokenSource lifetime = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Dashboard.Changed += OnWeatherChanged;
+        await RefreshLoopAsync();
+    }
+
+    private async Task RefreshLoopAsync()
+    {
+        try
+        {
+            await Dashboard.RefreshAsync(lifetime.Token);
+            _ = PollAsync();
+        }
+        catch (OperationCanceledException) when (lifetime.IsCancellationRequested) { }
+    }
+
+    private async Task PollAsync()
+    {
+        using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+        try
+        {
+            while (await timer.WaitForNextTickAsync(lifetime.Token))
+                await Dashboard.RefreshAsync(lifetime.Token);
+        }
+        catch (OperationCanceledException) when (lifetime.IsCancellationRequested) { }
+    }
+
+    private void OnWeatherChanged() => _ = InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        Dashboard.Changed -= OnWeatherChanged;
+        lifetime.Cancel();
+        lifetime.Dispose();
+    }
+}

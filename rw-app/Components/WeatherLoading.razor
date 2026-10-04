@@ -1,0 +1,9 @@
+<div class="loading" role="status">
+    <img class="weather-animation" src="weather-loading.gif" width="160" height="120" alt="" />
+    <img class="weather-still" src="weather-loading.png" width="160" height="120" alt="" />
+    <span>@Message</span>
+</div>
+
+@code {
+    [Parameter] public string Message { get; set; } = "Loading weather data…";
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Current conditions, air quality, weather history and alerts for Milton Township, Michigan." />
+    <base href="/" />
+    <title>Redfield Weather</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" href="site.css" />
+</head>
+<body>
+    <div id="app">
+        <div class="loading" role="status">
+            <img class="weather-animation" src="weather-loading.gif" width="160" height="120" alt="" />
+            <img class="weather-still" src="weather-loading.png" width="160" height="120" alt="" />
+            <span>Loading Redfield Weather…</span>
+        </div>
+    </div>
+    <div id="blazor-error-ui" role="alert">
+        An unexpected error occurred. <a href="" class="reload">Reload</a>
+        <a class="dismiss" aria-label="Dismiss error">×</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>

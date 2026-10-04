@@ -1,0 +1,27 @@
+@typeparam TReading
+<section class="card">
+    <h2>@Title</h2>
+    <dl class="metrics">
+        @foreach (var metric in Metrics)
+        {
+            <dt>@metric.Label</dt>
+            <dd>
+                @(Reading?.Format(metric.Selector, metric.Unit) ?? "—")
+                @if (metric.TimeSelector is not null && Reading?.Time(metric.TimeSelector) is { } time)
+                {
+                    <small>@SensorReading.FormatTime(time)</small>
+                }
+            </dd>
+        }
+    </dl>
+    @if (Reading?.Time() is { } timestamp)
+    {
+        <p class="timestamp">Reported @SensorReading.FormatTime(timestamp)</p>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter] public SensorReading<TReading>? Reading { get; set; }
+    [Parameter, EditorRequired] public WeatherMetric<TReading>[] Metrics { get; set; } = [];
+}

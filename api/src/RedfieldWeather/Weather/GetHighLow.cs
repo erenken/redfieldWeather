@@ -1,48 +1,21 @@
-using System.Net;
-using System.Text.Json;
-using Azure.Core.Serialization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using myNOC.WeatherLink.JsonConverters;
-using myNOC.WeatherLink.Responses;
 using RedfieldWeather.Repositories;
 
-namespace RedfieldWeather.Weather
+namespace RedfieldWeather.Weather;
+
+public sealed class GetHighLow(IHighLowWeatherRepository repository, ILogger<GetHighLow> logger)
 {
-    public class GetHighLow
+    [Function("GetHighLow")]
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest request)
     {
-        private readonly ILogger _logger;
-		private readonly SensorJsonConverterFactory _sensorJsonConverterFactory;
-		private readonly IHighLowWeatherRepository _highLowWeatherRepository;
+        var highLow = await repository.Get(request.HttpContext.RequestAborted);
+        if (string.IsNullOrWhiteSpace(highLow.Weather))
+            return new NoContentResult();
 
-		public GetHighLow(
-			ILoggerFactory loggerFactory,
-			SensorJsonConverterFactory sensorJsonConverterFactory,
-			IHighLowWeatherRepository highLowWeatherRepository
-			)
-        {
-            _logger = loggerFactory.CreateLogger<GetCurrentWeather>();
-			_sensorJsonConverterFactory = sensorJsonConverterFactory;
-			_highLowWeatherRepository = highLowWeatherRepository;
-		}
-
-        [Function("GetHighLow")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
-        {
-			JsonSerializerOptions options = new JsonSerializerOptions();
-			options.Converters.Add(_sensorJsonConverterFactory);
-
-			var highLowWeather = await _highLowWeatherRepository.Get();
-			var weather = JsonSerializer.Deserialize<WeatherDataResponse>(highLowWeather.Weather, options);
-
-			var objectSerializerOptions = new JsonObjectSerializer(options);
-			var response = req.CreateResponse(HttpStatusCode.OK);
-			await response.WriteAsJsonAsync(weather, objectSerializerOptions);
-
-			_logger.LogInformation($"High Low weather timestamp: {highLowWeather.Timestamp}");
-
-            return response;
-        }
+        logger.LogInformation("High/low weather timestamp: {Timestamp}", highLow.Timestamp);
+        return new ContentResult { Content = highLow.Weather, ContentType = "application/json", StatusCode = StatusCodes.Status200OK };
     }
 }

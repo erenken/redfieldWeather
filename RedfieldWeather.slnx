@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/api/" />
+  <Folder Name="/api/src/">
+    <Project Path="api/src/RedfieldWeather/RedfieldWeather.csproj" />
+  </Folder>
+  <Folder Name="/apphost/">
+    <Project Path="apphost/RedfieldWeather.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/rw-app/">
+    <Project Path="rw-app/RedfieldWeather.App.csproj" />
+  </Folder>
+</Solution>

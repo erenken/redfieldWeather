@@ -1,0 +1,23 @@
+@page "/alerts"
+@inherits WeatherPage
+<PageTitle>Weather Alerts | Redfield Weather</PageTitle>
+<h1>Weather Alerts</h1>
+<p>Active National Weather Service alerts for the station area.</p>
+@if (!Dashboard.IsLoading && Dashboard.Alerts.Count == 0 && !Dashboard.Errors.ContainsKey("Weather alerts"))
+{
+    <p>No active weather alerts.</p>
+}
+@foreach (var alert in Dashboard.Alerts)
+{
+    <section class="card alert-card">
+        <h2>@alert.Event</h2>
+        <p><strong>@alert.Headline</strong></p>
+        <p>Severity: @alert.Severity · Effective @SensorReading.FormatTime(alert.Effective) · Expires @SensorReading.FormatTime(alert.Expires)</p>
+        <p class="preserve-lines">@alert.Description</p>
+        @if (!string.IsNullOrWhiteSpace(alert.Instruction))
+        {
+            <h3>Instructions</h3>
+            <p class="preserve-lines">@alert.Instruction</p>
+        }
+    </section>
+}

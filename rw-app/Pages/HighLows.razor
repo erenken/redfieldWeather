@@ -1,0 +1,53 @@
+@page "/highLows"
+@inherits WeatherPage
+<PageTitle>Highs and Lows | Redfield Weather</PageTitle>
+<h1>Today's Highs and Lows</h1>
+<p>Daily statistics from WeatherLink. Observation times use your browser's local timezone.</p>
+@if (!Dashboard.IsLoading && Dashboard.HighLow is null)
+{
+    <p class="notice">No daily statistics are available yet.</p>
+}
+<div class="card-grid">
+    <MetricCard Title="Temperature" Reading="Dashboard.HighLow?.StationStatistics" Metrics="Temperature" />
+    <MetricCard Title="Wind" Reading="Dashboard.HighLow?.StationStatistics" Metrics="Wind" />
+    <MetricCard Title="Humidity and Dew Point" Reading="Dashboard.HighLow?.StationStatistics" Metrics="Humidity" />
+    <MetricCard Title="Rain and Sunshine" Reading="Dashboard.HighLow?.StationStatistics" Metrics="Rain" />
+    @if (Dashboard.HighLow?.AirQualityStatistics is { } air)
+    {
+        <section class="card">
+            <h2>Air Quality</h2>
+            <dl class="metrics">
+                <dt>High</dt><dd>@air.Format(reading => reading.AQIHighVal) · @air.Text(reading => reading.AQIHighDesc)</dd>
+                <dt>Average</dt><dd>@air.Format(reading => reading.AQIAvgVal) · @air.Text(reading => reading.AQIAvgDesc)</dd>
+                <dt>AQI Type</dt><dd>@air.Text(reading => reading.AQIType)</dd>
+            </dl>
+        </section>
+    }
+</div>
+
+@code {
+    private static readonly WeatherMetric<VantagePro2PlusArchive>[] Temperature = [
+        new("High", reading => reading.TemperatureHigh, " °F", reading => reading.UnixTemperatureHighAt),
+        new("Low", reading => reading.TemperatureLow, " °F", reading => reading.UnixTemperatureLowAt),
+        new("Average", reading => reading.TemperatureAvg, " °F"),
+        new("Heat Index High", reading => reading.HeatIndexHigh, " °F", reading => reading.UnixHeatIndexHighAt),
+        new("Wind Chill Low", reading => reading.WindChillLow, " °F", reading => reading.UnixWindChillLowAt),
+        new("Feels Like High", reading => reading.THSWIndexHigh, " °F", reading => reading.UnixTHSWIndexHighAt),
+        new("Feels Like Low", reading => reading.THSWIndexLow, " °F", reading => reading.UnixTHSWIndexLowAt)];
+    private static readonly WeatherMetric<VantagePro2PlusArchive>[] Wind = [
+        new("High", reading => reading.WindSpeedHigh, " mph", reading => reading.UnixWindSpeedHighAt),
+        new("Average", reading => reading.WindSpeedAvg, " mph"),
+        new("Direction at High", reading => reading.WindSpeedHighDir, "°"), new("Wind Run", reading => reading.WindRun, " mi")];
+    private static readonly WeatherMetric<VantagePro2PlusArchive>[] Humidity = [
+        new("Humidity High", reading => reading.HumidityHigh, " %", reading => reading.UnixHumidityHighAt),
+        new("Humidity Low", reading => reading.HumidityLow, " %", reading => reading.UnixHumidityLowAt),
+        new("Dew Point High", reading => reading.DewPointHigh, " °F", reading => reading.UnixDewPointHighAt),
+        new("Dew Point Low", reading => reading.DewPointLow, " °F", reading => reading.UnixDewPointLowAt)];
+    private static readonly WeatherMetric<VantagePro2PlusArchive>[] Rain = [
+        new("Total Rain", reading => reading.Rainfall_in, " in"),
+        new("Rain Rate High", reading => reading.RainRateHigh_in, " in/hr", reading => reading.UnixRainRateHighAt),
+        new("UV High", reading => reading.UvIndexHigh, "", reading => reading.UnixUVIndexHighAt),
+        new("UV Average", reading => reading.UVIndexAvg),
+        new("Solar Radiation High", reading => reading.SolarRadHigh, " W/m²", reading => reading.UnixSolarRadHighAt),
+        new("Solar Energy", reading => reading.SolarEnergy, " langleys")];
+}
